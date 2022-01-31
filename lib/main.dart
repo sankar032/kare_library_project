@@ -18,10 +18,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: "KARE Library",
       debugShowCheckedModeBanner: false,
-      home: IntroScreen(),
+      theme: ThemeData(
+        primaryColor: Colors.pinkAccent,
+      ),
+      home: const IntroScreen(),
     );
   }
 }
