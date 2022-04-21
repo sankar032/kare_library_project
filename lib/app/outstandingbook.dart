@@ -111,20 +111,57 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                         const SizedBox(
                           height: 10,
                         ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            hintText: "Student Reg No",
-                            suffixIcon: GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                color: Colors.transparent,
-                                child: const Icon(
-                                  Iconsax.scan,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: const OutlineInputBorder(),
+                                  hintText: "Student Reg No",
+                                  suffixIcon: GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      color: Colors.transparent,
+                                      child: const Icon(
+                                        Iconsax.scan,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            const Text(
+                              "OR",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: const OutlineInputBorder(),
+                                  hintText: "Staff Id",
+                                  suffixIcon: GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      color: Colors.transparent,
+                                      child: const Icon(
+                                        Iconsax.scan,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 25,

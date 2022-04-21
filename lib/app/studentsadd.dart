@@ -110,6 +110,26 @@ class _StudentDetailsState extends State<StudentDetails> {
                         const SizedBox(
                           height: 10,
                         ),
+                        DropdownButtonFormField<dynamic>(
+                          onChanged: (value) {},
+                          items: const [
+                            DropdownMenuItem(
+                              child: Text("BCA"),
+                              value: "BCA",
+                            ),
+                            DropdownMenuItem(
+                              child: Text("MCA"),
+                              value: "MCA",
+                            ),
+                          ],
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Class",
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         TextFormField(
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),

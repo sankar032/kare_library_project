@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:karelibrary/app/booksadd.dart';
+import 'package:karelibrary/app/outsidebooks.dart';
 import 'package:karelibrary/app/outstandingbook.dart';
+import 'package:karelibrary/app/overduedetails.dart';
 import 'package:karelibrary/app/staffsadd.dart';
 import 'package:karelibrary/app/studentsadd.dart';
 
@@ -147,11 +149,19 @@ class _MainAppState extends State<MainApp> {
               ),
               title: const Text("Out Standing Book"),
             ),
-            const ListTile(
-              leading: Icon(
+            ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const OverDueBooksDetails(),
+                  ),
+                );
+              },
+              leading: const Icon(
                 Iconsax.dollar_circle,
               ),
-              title: Text("Over Due Details"),
+              title: const Text("Over Due Details"),
             ),
             ListTile(
               onTap: () {
@@ -259,37 +269,47 @@ class _MainAppState extends State<MainApp> {
             const SizedBox(
               height: 10,
             ),
-            Container(
-              width: double.infinity,
-              height: 100,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  Text(
-                    "Out Side Book",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const OutsideBooks(),
                   ),
-                  SizedBox(height: 15),
-                  Text(
-                    "105",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                height: 100,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: const [
+                    Text(
+                      "Out Side Book",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 15),
+                    Text(
+                      "105",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(

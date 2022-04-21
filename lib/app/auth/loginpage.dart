@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:karelibrary/app/db/dbconfig.dart';
 import 'package:karelibrary/app/homepage.dart';
 
 class Login extends StatefulWidget {
@@ -11,7 +12,61 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
   bool passwordvissable = false;
+
+  Future loading(BuildContext context) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
+  Future alertbox(BuildContext context, String _title, String _error) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_title),
+          content: Text(_error),
+        );
+      },
+    );
+  }
+
+  Future loginvaild() async {
+    loading(context);
+    if (email.text.isEmpty) {
+      Navigator.pop(context);
+      alertbox(context, "Failed", "User ID is Must");
+    } else if (password.text.isEmpty) {
+      Navigator.pop(context);
+      alertbox(context, "Failed", "Password is Must");
+    } else {
+      var data = await DBaccess().loginfun(email.text, password.text);
+      Navigator.pop(context);
+      if (data["head"]["code"] == 200) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const MainApp(),
+          ),
+        );
+      } else {
+        alertbox(context, "Failed", data["head"]["msg"].toString());
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -56,9 +111,10 @@ class _LoginState extends State<Login> {
                     child: Column(
                       children: [
                         TextFormField(
+                          controller: email,
                           textInputAction: TextInputAction.next,
                           decoration: const InputDecoration(
-                            hintText: "Email or Phone Number",
+                            hintText: "Staff ID",
                             filled: true,
                             fillColor: Color(0xfff1f5f9),
                             prefixIcon: Icon(
@@ -70,9 +126,10 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         TextFormField(
+                          controller: password,
                           obscureText: passwordvissable == true ? false : true,
                           decoration: InputDecoration(
                             fillColor: const Color(0xfff1f5f9),
@@ -108,35 +165,11 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         const SizedBox(
-                          height: 10,
-                        ),
-                        GestureDetector(
-                          child: Container(
-                            padding: const EdgeInsets.only(
-                              top: 10,
-                              bottom: 10,
-                            ),
-                            alignment: Alignment.centerRight,
-                            child: const Text(
-                              "Forgot Password?",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const MainApp(),
-                              ),
-                            );
+                            loginvaild();
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -153,35 +186,6 @@ class _LoginState extends State<Login> {
                                 "Login",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                color: const Color(0xff00988F),
-                              ),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 15,
-                            ),
-                            width: double.infinity,
-                            child: const Center(
-                              child: Text(
-                                "Signup",
-                                style: TextStyle(
-                                  color: Color(0xff00988F),
                                   fontSize: 20,
                                   fontWeight: FontWeight.w800,
                                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:karelibrary/app/db/dbconfig.dart';
 
 class StaffAdd extends StatefulWidget {
   const StaffAdd({Key? key}) : super(key: key);
@@ -10,6 +11,65 @@ class StaffAdd extends StatefulWidget {
 }
 
 class _StaffAddState extends State<StaffAdd> {
+  TextEditingController staffname = TextEditingController();
+  TextEditingController staffid = TextEditingController();
+  TextEditingController staffemail = TextEditingController();
+  TextEditingController password = TextEditingController();
+
+  Future loading(BuildContext context) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
+  Future alertbox(BuildContext context, String _title, String _error) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_title),
+          content: Text(_error),
+        );
+      },
+    );
+  }
+
+  Future addstafffun() async {
+    loading(context);
+    if (staffname.text.isEmpty) {
+      Navigator.pop(context);
+      alertbox(context, "Failed", "Staff Name is Must");
+    } else if (staffid.text.isEmpty) {
+      Navigator.pop(context);
+      alertbox(context, "Failed", "Staff ID is Must");
+    } else if (password.text.isEmpty) {
+      Navigator.pop(context);
+      alertbox(context, "Failed", "Password is Must");
+    } else {
+      var data = await DBaccess().staffadd(
+        staffname.text,
+        staffid.text,
+        staffemail.text,
+        password.text,
+      );
+      Navigator.pop(context);
+      if (data["head"]["code"] == 200) {
+        alertbox(context, "Success", "New Staff Details Added");
+      } else {
+        alertbox(context, "Failed", data["head"]["msg"]);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -93,6 +153,7 @@ class _StaffAddState extends State<StaffAdd> {
                     child: Column(
                       children: [
                         TextFormField(
+                          controller: staffname,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Staff Name",
@@ -102,6 +163,17 @@ class _StaffAddState extends State<StaffAdd> {
                           height: 10,
                         ),
                         TextFormField(
+                          controller: staffemail,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Staff email",
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: staffid,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Staff ID",
@@ -111,6 +183,7 @@ class _StaffAddState extends State<StaffAdd> {
                           height: 10,
                         ),
                         TextFormField(
+                          controller: password,
                           obscureText: true,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
@@ -120,23 +193,28 @@ class _StaffAddState extends State<StaffAdd> {
                         const SizedBox(
                           height: 25,
                         ),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 20,
-                            horizontal: 20,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xff00988F),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Add Staff",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                        GestureDetector(
+                          onTap: () {
+                            addstafffun();
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 20,
+                              horizontal: 20,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xff00988F),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                "Add Staff",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ),
