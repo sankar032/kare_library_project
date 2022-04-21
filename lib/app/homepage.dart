@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:karelibrary/app/booksadd.dart';
+import 'package:karelibrary/app/outstandingbook.dart';
+import 'package:karelibrary/app/staffsadd.dart';
+import 'package:karelibrary/app/studentsadd.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({Key? key}) : super(key: key);
@@ -101,23 +105,47 @@ class _MainAppState extends State<MainApp> {
               ),
               title: Text("Home"),
             ),
-            const ListTile(
-              leading: Icon(
+            ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const StudentDetails(),
+                  ),
+                );
+              },
+              leading: const Icon(
                 Iconsax.user,
               ),
-              title: Text("Student Details"),
+              title: const Text("Student Details"),
             ),
-            const ListTile(
-              leading: Icon(
+            ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Booksadd(),
+                  ),
+                );
+              },
+              leading: const Icon(
                 Iconsax.book,
               ),
-              title: Text("Books Details"),
+              title: const Text("Books Details"),
             ),
-            const ListTile(
-              leading: Icon(
+            ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const OutStandingBooks(),
+                  ),
+                );
+              },
+              leading: const Icon(
                 Iconsax.book_1,
               ),
-              title: Text("Out Standing Book"),
+              title: const Text("Out Standing Book"),
             ),
             const ListTile(
               leading: Icon(
@@ -125,9 +153,17 @@ class _MainAppState extends State<MainApp> {
               ),
               title: Text("Over Due Details"),
             ),
-            const ListTile(
-              leading: Icon(Iconsax.user_edit),
-              title: Text("Staffs Details"),
+            ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const StaffAdd(),
+                  ),
+                );
+              },
+              leading: const Icon(Iconsax.user_edit),
+              title: const Text("Staffs Details"),
             ),
             const Spacer(),
             const ListTile(
