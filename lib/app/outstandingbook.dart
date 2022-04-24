@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:iconsax/iconsax.dart';
 
 class OutStandingBooks extends StatefulWidget {
@@ -10,6 +11,47 @@ class OutStandingBooks extends StatefulWidget {
 }
 
 class _OutStandingBooksState extends State<OutStandingBooks> {
+  TextEditingController bookname = TextEditingController();
+  TextEditingController bookno = TextEditingController();
+  TextEditingController bookrowno = TextEditingController();
+  TextEditingController studentregno = TextEditingController();
+  TextEditingController staffid = TextEditingController();
+
+  Future loading(BuildContext context) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
+  Future alertbox(BuildContext context, String _title, String _error) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_title),
+          content: Text(_error),
+        );
+      },
+    );
+  }
+
+  Future addoutsourcebookdetails() async {
+    loading(context);
+    if (bookno.text.isEmpty) {
+      Navigator.pop(context);
+      alertbox(context, "Failed", "Book Details is Must");
+    } else {}
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -33,32 +75,43 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
               height: 180,
               width: double.infinity,
               child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 20,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xff00988F),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Text(
-                        "Scan Book",
-                        style: TextStyle(
-                          color: Colors.white,
+                child: GestureDetector(
+                  onTap: () async {
+                    FlutterBarcodeScanner.getBarcodeStreamReceiver(
+                            "#ff6666", "Cancel", false, ScanMode.DEFAULT)
+                        ?.listen((barcode) {
+                      setState(() {
+                        bookno.text = barcode.toString();
+                      });
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 20,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xff00988F),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Text(
+                          "Scan Book",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Icon(
-                        Iconsax.scan,
-                        color: Colors.white,
-                      )
-                    ],
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Icon(
+                          Iconsax.scan,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -85,6 +138,7 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                     child: Column(
                       children: [
                         TextFormField(
+                          controller: bookname,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Book Name",
@@ -94,6 +148,7 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                           height: 10,
                         ),
                         TextFormField(
+                          controller: bookno,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Book No",
@@ -103,6 +158,7 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                           height: 10,
                         ),
                         TextFormField(
+                          controller: bookrowno,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Book Row No",
@@ -115,11 +171,24 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                           children: [
                             Expanded(
                               child: TextFormField(
+                                controller: studentregno,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   hintText: "Student Reg No",
                                   suffixIcon: GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      FlutterBarcodeScanner
+                                          .getBarcodeStreamReceiver(
+                                        "#ff6666",
+                                        "Cancel",
+                                        false,
+                                        ScanMode.DEFAULT,
+                                      )?.listen((regno) {
+                                        setState(() {
+                                          studentregno.text = regno.toString();
+                                        });
+                                      });
+                                    },
                                     child: Container(
                                       color: Colors.transparent,
                                       child: const Icon(
@@ -146,11 +215,24 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                             ),
                             Expanded(
                               child: TextFormField(
+                                controller: staffid,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   hintText: "Staff Id",
                                   suffixIcon: GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      FlutterBarcodeScanner
+                                          .getBarcodeStreamReceiver(
+                                        "#ff6666",
+                                        "Cancel",
+                                        false,
+                                        ScanMode.DEFAULT,
+                                      )?.listen((staffid) {
+                                        setState(() {
+                                          staffid.text = staffid.toString();
+                                        });
+                                      });
+                                    },
                                     child: Container(
                                       color: Colors.transparent,
                                       child: const Icon(
@@ -166,23 +248,28 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                         const SizedBox(
                           height: 25,
                         ),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 20,
-                            horizontal: 20,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xff00988F),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Add Book",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                        GestureDetector(
+                          onTap: () {
+                            addoutsourcebookdetails();
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 20,
+                              horizontal: 20,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xff00988F),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                "Add Book",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ),
