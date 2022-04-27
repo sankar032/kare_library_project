@@ -2,12 +2,13 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DBaccess {
-  var loginapi = Uri.parse('http://172.20.11.66/karelib/login.php');
-  var staffaddapi = Uri.parse('http://172.20.11.66/karelib/staffadd.php');
-  var studentaddapi = Uri.parse('http://172.20.11.66/karelib/studentadd.php');
-  var scanbookapi = Uri.parse('http://172.20.11.66/karelib/scanbook.php');
+  var loginapi = Uri.parse('https://karelib.000webhostapp.com/login.php');
+  var staffaddapi = Uri.parse('https://karelib.000webhostapp.com/staffadd.php');
+  var studentaddapi =
+      Uri.parse('https://karelib.000webhostapp.com/studentadd.php');
+  var scanbookapi = Uri.parse('https://karelib.000webhostapp.com/scanbook.php');
   var outsourebookapi =
-      Uri.parse('http://172.20.11.66/karelib/outsourebook.php');
+      Uri.parse('https://karelib.000webhostapp.com/outsourebook.php');
 
   Future loginfun(String userid, String password) async {
     var data = {'staffid': userid, 'password': password};

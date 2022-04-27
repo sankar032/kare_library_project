@@ -36,8 +36,8 @@ dependencies:
   iconsax: ^0.0.8
   http: ^0.13.3
   intl: ^0.17.0
-  flutter_barcode_scanner: ^2.0.0
   shared_preferences:
+  barcode_scan2: ^4.2.0
 
 dev_dependencies:
   flutter_test:

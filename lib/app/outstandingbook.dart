@@ -1,6 +1,6 @@
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:iconsax/iconsax.dart';
 
 class OutStandingBooks extends StatefulWidget {
@@ -77,13 +77,9 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
               child: Center(
                 child: GestureDetector(
                   onTap: () async {
-                    FlutterBarcodeScanner.getBarcodeStreamReceiver(
-                            "#ff6666", "Cancel", false, ScanMode.DEFAULT)
-                        ?.listen((barcode) {
-                      setState(() {
-                        bookno.text = barcode.toString();
-                      });
-                    });
+                    var result = await BarcodeScanner.scan();
+
+                    bookno.text = result.toString();
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -176,18 +172,10 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                                   border: const OutlineInputBorder(),
                                   hintText: "Student Reg No",
                                   suffixIcon: GestureDetector(
-                                    onTap: () {
-                                      FlutterBarcodeScanner
-                                          .getBarcodeStreamReceiver(
-                                        "#ff6666",
-                                        "Cancel",
-                                        false,
-                                        ScanMode.DEFAULT,
-                                      )?.listen((regno) {
-                                        setState(() {
-                                          studentregno.text = regno.toString();
-                                        });
-                                      });
+                                    onTap: () async {
+                                      var result = await BarcodeScanner.scan();
+
+                                      studentregno.text = result.toString();
                                     },
                                     child: Container(
                                       color: Colors.transparent,
@@ -220,18 +208,9 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                                   border: const OutlineInputBorder(),
                                   hintText: "Staff Id",
                                   suffixIcon: GestureDetector(
-                                    onTap: () {
-                                      FlutterBarcodeScanner
-                                          .getBarcodeStreamReceiver(
-                                        "#ff6666",
-                                        "Cancel",
-                                        false,
-                                        ScanMode.DEFAULT,
-                                      )?.listen((staffid) {
-                                        setState(() {
-                                          staffid.text = staffid.toString();
-                                        });
-                                      });
+                                    onTap: () async {
+                                      var result = await BarcodeScanner.scan();
+                                      staffid.text = result.toString();
                                     },
                                     child: Container(
                                       color: Colors.transparent,
