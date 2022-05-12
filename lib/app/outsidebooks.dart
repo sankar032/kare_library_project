@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:iconsax/iconsax.dart';
 
 class OutsideBooks extends StatefulWidget {
   const OutsideBooks({Key? key}) : super(key: key);
@@ -9,6 +10,21 @@ class OutsideBooks extends StatefulWidget {
 }
 
 class _OutsideBooksState extends State<OutsideBooks> {
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -23,7 +39,7 @@ class _OutsideBooksState extends State<OutsideBooks> {
         elevation: 0,
         backgroundColor: const Color(0xff00988F),
         title: const Text(
-          "Out Side Details",
+          "Report Details",
         ),
       ),
       body: SingleChildScrollView(
@@ -32,35 +48,129 @@ class _OutsideBooksState extends State<OutsideBooks> {
           children: [
             Container(
               width: double.infinity,
-              height: 100,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(5),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  Text(
-                    "Out Side Book",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+              child: Form(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Filter Options",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    "3",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
+                    const SizedBox(
+                      height: 15,
                     ),
-                  ),
-                ],
+                    TextFormField(
+                      onTap: () => _selectDate(context),
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        hintText: "Starting Date",
+                        filled: true,
+                        fillColor: Color(0xfff1f5f9),
+                        prefixIcon: Icon(
+                          Iconsax.calendar_1,
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      onTap: () => _selectDate(context),
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        hintText: "Ending Date",
+                        filled: true,
+                        fillColor: Color(0xfff1f5f9),
+                        prefixIcon: Icon(
+                          Iconsax.calendar_1,
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    DropdownButtonFormField(
+                      onChanged: (value) {},
+                      items: const [
+                        DropdownMenuItem(
+                          child: Text(
+                            "All",
+                          ),
+                          value: "1",
+                        ),
+                        DropdownMenuItem(
+                          child: Text(
+                            "Out Side Book",
+                          ),
+                          value: "1",
+                        ),
+                        DropdownMenuItem(
+                          child: Text(
+                            "Over Due Books",
+                          ),
+                          value: "1",
+                        ),
+                      ],
+                      decoration: const InputDecoration(
+                        hintText: "Category",
+                        filled: true,
+                        fillColor: Color(0xfff1f5f9),
+                        prefixIcon: Icon(
+                          Iconsax.category,
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    GestureDetector(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 15,
+                          horizontal: 15,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xff00988F),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: const [
+                            Text(
+                              "Search Report",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(
@@ -103,35 +213,38 @@ class _OutsideBooksState extends State<OutsideBooks> {
                     DataColumn(
                       label: Text("Our Due Date"),
                     ),
+                    DataColumn(
+                      label: Text("Actions"),
+                    ),
                   ],
-                  rows: const [
+                  rows: [
                     DataRow(
                       cells: [
-                        DataCell(
+                        const DataCell(
                           Text("1"),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text("5012"),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text("Advance PHP Development"),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text("9921116017"),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text("M Sankar"),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text("MCA"),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text("11/04/22"),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text("20/04/22"),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text(
                             "1",
                             style: TextStyle(
@@ -139,9 +252,15 @@ class _OutsideBooksState extends State<OutsideBooks> {
                             ),
                           ),
                         ),
+                        DataCell(
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: const Text("Recived"),
+                          ),
+                        ),
                       ],
                     ),
-                    DataRow(
+                    const DataRow(
                       cells: [
                         DataCell(
                           Text("2"),
@@ -175,9 +294,12 @@ class _OutsideBooksState extends State<OutsideBooks> {
                             ),
                           ),
                         ),
+                        DataCell(
+                          SizedBox(),
+                        ),
                       ],
                     ),
-                    DataRow(
+                    const DataRow(
                       cells: [
                         DataCell(
                           Text("3"),
@@ -211,9 +333,12 @@ class _OutsideBooksState extends State<OutsideBooks> {
                             ),
                           ),
                         ),
+                        DataCell(
+                          SizedBox(),
+                        ),
                       ],
                     ),
-                    DataRow(
+                    const DataRow(
                       cells: [
                         DataCell(
                           Text("4"),
@@ -241,6 +366,9 @@ class _OutsideBooksState extends State<OutsideBooks> {
                         ),
                         DataCell(
                           Text("0"),
+                        ),
+                        DataCell(
+                          SizedBox(),
                         ),
                       ],
                     ),
