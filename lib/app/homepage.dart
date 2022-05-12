@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:karelibrary/app/booksadd.dart';
+import 'package:karelibrary/app/db/dbconfig.dart';
 import 'package:karelibrary/app/outsidebooks.dart';
 import 'package:karelibrary/app/outstandingbook.dart';
 import 'package:karelibrary/app/overduedetails.dart';
 import 'package:karelibrary/app/staffsadd.dart';
 import 'package:karelibrary/app/studentsadd.dart';
+import 'package:karelibrary/app/totalbooks.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({Key? key}) : super(key: key);
@@ -16,6 +18,19 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
+  late Future myFuture;
+
+  Future getdata() async {
+    var data = await DBaccess().dashboardfun();
+    return data;
+  }
+
+  @override
+  void initState() {
+    myFuture = getdata();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -187,243 +202,243 @@ class _MainAppState extends State<MainApp> {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: const [
-                        Text(
-                          "Total Student",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          "105",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: const [
-                        Text(
-                          "Total Books",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          "105",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const OutsideBooks(),
-                  ),
-                );
-              },
-              child: Container(
-                width: double.infinity,
-                height: 100,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: const [
-                    Text(
-                      "Out Side Book",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    Text(
-                      "105",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: double.infinity,
-              height: 100,
+      body: FutureBuilder(
+        future: myFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return SingleChildScrollView(
               padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(5),
-              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  Text(
-                    "Over Due Book",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 100,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Text(
+                                "Total Student",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              Text(
+                                (snapshot.data as dynamic)["body"]["Totstd"]
+                                    .toString(),
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: 100,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Text(
+                                "Total Books",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              Text(
+                                (snapshot.data as dynamic)["body"]["Totbook"]
+                                    .toString(),
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const OutsideBooks(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 100,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text(
+                            "Out Side Book",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          Text(
+                            (snapshot.data as dynamic)["body"]["outsidebook"]
+                                .toString(),
+                            textAlign: TextAlign.start,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(height: 15),
-                  Text(
-                    "105",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 100,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
                     ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        const Text(
+                          "Over Due Book",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        Text(
+                          (snapshot.data as dynamic)["body"]["overdue"]
+                              .toString(),
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  (snapshot.data as dynamic)["body"]["book"].length > 0
+                      ? Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              columns: const [
+                                DataColumn(
+                                  label: Text("S.NO"),
+                                ),
+                                DataColumn(
+                                  label: Text("Book No"),
+                                ),
+                                DataColumn(
+                                  label: Text("Book Name"),
+                                ),
+                              ],
+                              rows: [
+                                for (var item in (snapshot.data
+                                    as dynamic)["body"]["book"])
+                                  DataRow(
+                                    cells: [
+                                      DataCell(
+                                        Text(item["sno"].toString()),
+                                      ),
+                                      DataCell(
+                                        Text(item["bookno"].toString()),
+                                      ),
+                                      DataCell(
+                                        Text(item["bookname"].toString()),
+                                      ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TotalBooks(),
+                        ),
+                      );
+                    },
+                    child: const Text("View All"),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columns: const [
-                    DataColumn(
-                      label: Text("S.NO"),
-                    ),
-                    DataColumn(
-                      label: Text("Book No"),
-                    ),
-                    DataColumn(
-                      label: Text("Book Name"),
-                    ),
-                  ],
-                  rows: const [
-                    DataRow(
-                      cells: [
-                        DataCell(
-                          Text("1"),
-                        ),
-                        DataCell(
-                          Text("5012"),
-                        ),
-                        DataCell(
-                          Text("Advance PHP Development"),
-                        ),
-                      ],
-                    ),
-                    DataRow(
-                      cells: [
-                        DataCell(
-                          Text("2"),
-                        ),
-                        DataCell(
-                          Text("5012"),
-                        ),
-                        DataCell(
-                          Text("beginner PHP development"),
-                        ),
-                      ],
-                    ),
-                    DataRow(
-                      cells: [
-                        DataCell(
-                          Text("3"),
-                        ),
-                        DataCell(
-                          Text("4512"),
-                        ),
-                        DataCell(
-                          Text("beginner flutter development"),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("View All"),
-            ),
-          ],
-        ),
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
   }

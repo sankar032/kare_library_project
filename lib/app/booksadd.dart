@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:karelibrary/app/db/dbconfig.dart';
 
 class Booksadd extends StatefulWidget {
   const Booksadd({Key? key}) : super(key: key);
@@ -10,6 +11,60 @@ class Booksadd extends StatefulWidget {
 }
 
 class _BooksaddState extends State<Booksadd> {
+  TextEditingController bookname = TextEditingController();
+  TextEditingController bookno = TextEditingController();
+  TextEditingController rowno = TextEditingController();
+
+  Future loading(BuildContext context) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
+  Future alertbox(BuildContext context, String _title, String _error) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_title),
+          content: Text(_error),
+        );
+      },
+    );
+  }
+
+  Future addbookfun() async {
+    loading(context);
+    if (bookname.text.isEmpty) {
+      Navigator.pop(context);
+      alertbox(context, "Failed", "Book Name is Must");
+    } else if (bookno.text.isEmpty) {
+      Navigator.pop(context);
+      alertbox(context, "Failed", "Book No is Must");
+    } else if (rowno.text.isEmpty) {
+      Navigator.pop(context);
+      alertbox(context, "Failed", "Book Row No is Must");
+    } else {
+      var data =
+          await DBaccess().bookadd(bookname.text, bookno.text, rowno.text);
+      Navigator.pop(context);
+      if (data["head"]["code"] == 200) {
+        alertbox(context, "Success", "New Book Details Added");
+      } else {
+        alertbox(context, "Failed", data["head"]["msg"]);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -93,6 +148,7 @@ class _BooksaddState extends State<Booksadd> {
                     child: Column(
                       children: [
                         TextFormField(
+                          controller: bookname,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Book Name",
@@ -102,6 +158,7 @@ class _BooksaddState extends State<Booksadd> {
                           height: 10,
                         ),
                         TextFormField(
+                          controller: bookno,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Book No",
@@ -111,7 +168,7 @@ class _BooksaddState extends State<Booksadd> {
                           height: 10,
                         ),
                         TextFormField(
-                          obscureText: true,
+                          controller: rowno,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Book Row No",
@@ -120,23 +177,28 @@ class _BooksaddState extends State<Booksadd> {
                         const SizedBox(
                           height: 25,
                         ),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 20,
-                            horizontal: 20,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xff00988F),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Add Book",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                        GestureDetector(
+                          onTap: () {
+                            addbookfun();
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 20,
+                              horizontal: 20,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xff00988F),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                "Add Book",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ),

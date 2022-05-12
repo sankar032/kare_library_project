@@ -2,6 +2,7 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:karelibrary/app/db/dbconfig.dart';
 
 class OutStandingBooks extends StatefulWidget {
   const OutStandingBooks({Key? key}) : super(key: key);
@@ -16,6 +17,9 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
   TextEditingController bookrowno = TextEditingController();
   TextEditingController studentregno = TextEditingController();
   TextEditingController staffid = TextEditingController();
+
+  bool studentscan = true;
+  bool staffscan = true;
 
   Future loading(BuildContext context) {
     return showDialog(
@@ -44,12 +48,44 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
     );
   }
 
+  Future getbookdetailsscan(String booknodata) async {
+    loading(context);
+    var data = await DBaccess().scanbook(booknodata);
+    Navigator.pop(context);
+    if (data["head"]["code"] == 200) {
+      setState(() {
+        bookname.text = data["body"]["bookname"];
+        bookrowno.text = data["body"]["book_row"];
+      });
+    } else {
+      setState(() {
+        bookno.text = '';
+      });
+      alertbox(context, "Failed", data["head"]["msg"].toString());
+    }
+  }
+
   Future addoutsourcebookdetails() async {
     loading(context);
     if (bookno.text.isEmpty) {
       Navigator.pop(context);
       alertbox(context, "Failed", "Book Details is Must");
-    } else {}
+    } else if (studentregno.text.isEmpty && staffid.text.isEmpty) {
+      Navigator.pop(context);
+      alertbox(context, "Failed", "Student Id Or Staff Id is Must");
+    } else {
+      var data = await DBaccess().outsourcebook(
+        bookno.text,
+        studentregno.text,
+        staffid.text,
+      );
+      Navigator.pop(context);
+      if (data["head"]["code"] == 200) {
+        alertbox(context, "Success", data["head"]["msg"]);
+      } else {
+        alertbox(context, "Failed", data["head"]["msg"]);
+      }
+    }
   }
 
   @override
@@ -78,8 +114,10 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                 child: GestureDetector(
                   onTap: () async {
                     var result = await BarcodeScanner.scan();
-
-                    bookno.text = result.toString();
+                    setState(() {
+                      bookno.text = result.rawContent.toString();
+                    });
+                    getbookdetailsscan(result.rawContent);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -135,6 +173,7 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                       children: [
                         TextFormField(
                           controller: bookname,
+                          enabled: false,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Book Name",
@@ -155,6 +194,7 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                         ),
                         TextFormField(
                           controller: bookrowno,
+                          enabled: false,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Book Row No",
@@ -168,14 +208,30 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                             Expanded(
                               child: TextFormField(
                                 controller: studentregno,
+                                enabled: studentscan,
+                                onChanged: (value) {
+                                  if (value.isEmpty) {
+                                    setState(() {
+                                      staffscan = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      staffscan = false;
+                                    });
+                                  }
+                                },
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   hintText: "Student Reg No",
                                   suffixIcon: GestureDetector(
                                     onTap: () async {
                                       var result = await BarcodeScanner.scan();
-
-                                      studentregno.text = result.toString();
+                                      setState(() {
+                                        studentregno.text =
+                                            result.rawContent.toString();
+                                        staffid.text = '';
+                                        staffscan = false;
+                                      });
                                     },
                                     child: Container(
                                       color: Colors.transparent,
@@ -204,13 +260,30 @@ class _OutStandingBooksState extends State<OutStandingBooks> {
                             Expanded(
                               child: TextFormField(
                                 controller: staffid,
+                                enabled: staffscan,
+                                onChanged: (value) {
+                                  if (value.isEmpty == true) {
+                                    setState(() {
+                                      studentscan = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      studentscan = false;
+                                    });
+                                  }
+                                },
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   hintText: "Staff Id",
                                   suffixIcon: GestureDetector(
                                     onTap: () async {
                                       var result = await BarcodeScanner.scan();
-                                      staffid.text = result.toString();
+                                      setState(() {
+                                        staffid.text =
+                                            result.rawContent.toString();
+                                        studentregno.text = '';
+                                        studentscan = false;
+                                      });
                                     },
                                     child: Container(
                                       color: Colors.transparent,
