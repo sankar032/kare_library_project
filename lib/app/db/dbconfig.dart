@@ -13,6 +13,9 @@ class DBaccess {
   var dashapi = Uri.parse('https://karelib.000webhostapp.com/dashboard.php');
   var totalbooks =
       Uri.parse('https://karelib.000webhostapp.com/totalbooks.php');
+  var reportapi = Uri.parse("https://karelib.000webhostapp.com/report.php");
+  var returnbookapi =
+      Uri.parse("https://karelib.000webhostapp.com/returnbook.php");
 
   Future loginfun(String userid, String password) async {
     var data = {'staffid': userid, 'password': password};
@@ -96,6 +99,34 @@ class DBaccess {
       'staffid': staffid,
     };
     var response = await http.post(outsourebookapi, body: json.encode(data));
+    var message = jsonDecode(response.body);
+    return message;
+  }
+
+  Future returnbookfun(
+    String trid,
+    String dueamount,
+  ) async {
+    var data = {
+      'tr_id': trid,
+      'due_amount': dueamount,
+    };
+    var response = await http.post(returnbookapi, body: json.encode(data));
+    var message = jsonDecode(response.body);
+    return message;
+  }
+
+  Future reportfun(
+    String sdate,
+    String edate,
+    String cat,
+  ) async {
+    var data = {
+      's_date': sdate,
+      'e_date': edate,
+      'cat': cat,
+    };
+    var response = await http.post(reportapi, body: json.encode(data));
     var message = jsonDecode(response.body);
     return message;
   }

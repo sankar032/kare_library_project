@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:karelibrary/app/auth/loginpage.dart';
 import 'package:karelibrary/app/booksadd.dart';
 import 'package:karelibrary/app/db/dbconfig.dart';
 import 'package:karelibrary/app/outsidebooks.dart';
@@ -9,6 +10,7 @@ import 'package:karelibrary/app/overduedetails.dart';
 import 'package:karelibrary/app/staffsadd.dart';
 import 'package:karelibrary/app/studentsadd.dart';
 import 'package:karelibrary/app/totalbooks.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({Key? key}) : super(key: key);
@@ -19,15 +21,26 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   late Future myFuture;
+  late String username = "";
+  late String email = "";
 
   Future getdata() async {
     var data = await DBaccess().dashboardfun();
     return data;
   }
 
+  inidata() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      username = preferences.getString("username")!;
+      email = preferences.getString("email")!;
+    });
+  }
+
   @override
   void initState() {
     myFuture = getdata();
+    inidata();
     super.initState();
   }
 
@@ -98,17 +111,17 @@ class _MainAppState extends State<MainApp> {
                       ),
                     ),
                   ),
-                  const ListTile(
-                    contentPadding: EdgeInsets.all(0),
+                  ListTile(
+                    contentPadding: const EdgeInsets.all(0),
                     title: Text(
-                      "M Sankar",
-                      style: TextStyle(
+                      username,
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),
                     subtitle: Text(
-                      "msankar032@gmail.com",
-                      style: TextStyle(
+                      email,
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),
@@ -195,9 +208,23 @@ class _MainAppState extends State<MainApp> {
               title: Text("Version: 1.0"),
             ),
             const Divider(),
-            const ListTile(
-              leading: Icon(Iconsax.logout),
-              title: Text("Logout"),
+            ListTile(
+              onTap: () async {
+                SharedPreferences preferences =
+                    await SharedPreferences.getInstance();
+                setState(() {
+                  preferences.setBool("login", false);
+                });
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Login(),
+                  ),
+                );
+              },
+              leading: const Icon(Iconsax.logout),
+              title: const Text("Logout"),
             ),
           ],
         ),
@@ -295,7 +322,9 @@ class _MainAppState extends State<MainApp> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const OutsideBooks(),
+                          builder: (context) => const OutsideBooks(
+                            catid: 1,
+                          ),
                         ),
                       );
                     },
@@ -337,38 +366,50 @@ class _MainAppState extends State<MainApp> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    width: double.infinity,
-                    height: 100,
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text(
-                          "Over Due Book",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const OutsideBooks(
+                            catid: 2,
                           ),
                         ),
-                        const SizedBox(height: 15),
-                        Text(
-                          (snapshot.data as dynamic)["body"]["overdue"]
-                              .toString(),
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 100,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text(
+                            "Over Due Book",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 15),
+                          Text(
+                            (snapshot.data as dynamic)["body"]["overdue"]
+                                .toString(),
+                            textAlign: TextAlign.start,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(

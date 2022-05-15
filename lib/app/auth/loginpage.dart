@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:karelibrary/app/db/dbconfig.dart';
 import 'package:karelibrary/app/homepage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -55,6 +56,13 @@ class _LoginState extends State<Login> {
       var data = await DBaccess().loginfun(email.text, password.text);
       Navigator.pop(context);
       if (data["head"]["code"] == 200) {
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        setState(() {
+          preferences.setBool("login", true);
+          preferences.setString(
+              "username", data["body"]["username"].toString());
+          preferences.setString("email", data["body"]["email"].toString());
+        });
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -131,6 +139,9 @@ class _LoginState extends State<Login> {
                         TextFormField(
                           controller: password,
                           obscureText: passwordvissable == true ? false : true,
+                          onEditingComplete: () {
+                            loginvaild();
+                          },
                           decoration: InputDecoration(
                             fillColor: const Color(0xfff1f5f9),
                             filled: true,
